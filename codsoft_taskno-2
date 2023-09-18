@@ -1,1 +1,269 @@
+package newone;
+
+import java.awt.EventQueue;
+import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.JTextField;
+import javax.swing.border.TitledBorder;
+
+import net.proteanit.sql.DbUtils;
+
+
+
+
+public class STUDENT {
+
+	private JFrame frame;
+	private JTextField sname;
+	private JTextField sgrade;
+	private JTable table;
+	private JTextField sid;
+	private JTextField sreg;
+
+	public static void main(String[] args)throws Exception
+	{
+		
+		EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				try {
+					STUDENT window = new STUDENT();
+					window.frame.setVisible(true);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
+	}
+
+	public STUDENT() {
+		initialize();
+		Connect();
+		table_load();
+	}
+	Connection con;
+	PreparedStatement pst;
+	ResultSet rs;
+	
+	public void table_load()
+	{
+		try {
+			pst=con.prepareStatement("select * from Stdu");
+			rs=pst.executeQuery();
+			table.setModel(DbUtils.resultSetToTableModel(rs));
+			
+		}
+		catch(SQLException e)
+		{
+			e.printStackTrace();
+		}
+		
+	}
+	
+	
+	
+
+	 public void Connect()
+	    {
+	        try {
+	            Class.forName("com.mysql.cj.jdbc.Driver");
+	            con = DriverManager.getConnection("jdbc:mysql://localhost:3306/Student", "root","Vasim@2003");
+	        }
+	        catch (ClassNotFoundException ex) 
+	        {
+	          ex.printStackTrace();
+	        }
+	        catch (SQLException ex) 
+	        {
+	               ex.printStackTrace();
+	        }
+
+	    }
+	
+	private void initialize() {
+		frame = new JFrame();
+		frame.setBounds(100, 100, 937, 555);
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.getContentPane().setLayout(null);
+		
+		JLabel lblNewLabel = new JLabel("student");
+		lblNewLabel.setFont(new Font("Tahoma", Font.BOLD, 30));
+		lblNewLabel.setBounds(323, -11, 198, 88);
+		frame.getContentPane().add(lblNewLabel);
+		
+		JPanel panel = new JPanel();
+		panel.setBorder(new TitledBorder(null, "Registration", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+		panel.setBounds(22, 87, 395, 226);
+		frame.getContentPane().add(panel);
+		panel.setLayout(null);
+		
+		JLabel lblNewLabel_1 = new JLabel("student name");
+		lblNewLabel_1.setFont(new Font("Tahoma", Font.BOLD, 14));
+		lblNewLabel_1.setBounds(29, 34, 100, 27);
+		panel.add(lblNewLabel_1);
+		
+		JLabel lblNewLabel_1_2 = new JLabel("Grade");
+		lblNewLabel_1_2.setFont(new Font("Tahoma", Font.BOLD, 14));
+		lblNewLabel_1_2.setBounds(29, 116, 100, 27);
+		panel.add(lblNewLabel_1_2);
+		
+		sname = new JTextField();
+		sname.setBounds(164, 40, 160, 19);
+		panel.add(sname);
+		sname.setColumns(10);
+		
+		sgrade = new JTextField();
+		sgrade.setColumns(10);
+		sgrade.setBounds(164, 116, 160, 19);
+		panel.add(sgrade);
+		
+		JLabel lblNewLabel_1_1 = new JLabel("Reg num");
+		lblNewLabel_1_1.setFont(new Font("Tahoma", Font.BOLD, 14));
+		lblNewLabel_1_1.setBounds(29, 77, 65, 17);
+		panel.add(lblNewLabel_1_1);
+		
+		sid = new JTextField();
+		sid.setColumns(10);
+		sid.setBounds(164, 78, 160, 19);
+		panel.add(sid);
+		
+		JButton btnNewButton = new JButton("Save");
+		btnNewButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				         
+				    String name,id,grade;
+				    name = sname.getText();
+				    id = sid.getText();
+				    grade = sgrade.getText();
+				                
+				     try {
+				        pst = con.prepareStatement("insert into Stdu(sname,sid,grade)values(?,?,?)");
+				        pst.setString(1, name);
+				        pst.setString(2, id);
+				        pst.setString(3, grade);
+				        pst.executeUpdate();
+				        JOptionPane.showMessageDialog(null, "Record Addedddd!!!!!");
+				        
+				        table_load();
+				                       
+				        sname.setText("");
+				        sid.setText("");
+				        sgrade.setText("");
+				        sname.requestFocus();
+				       }
+
+				    catch (SQLException e1) 
+				        {            
+				       e1.printStackTrace();
+				    }
+				}
+			
+		});
+		btnNewButton.setBounds(37, 323, 85, 48);
+		frame.getContentPane().add(btnNewButton);
+
+		
+		JScrollPane scrollPane = new JScrollPane();
+		scrollPane.setBounds(427, 87, 468, 284);
+		frame.getContentPane().add(scrollPane);
+		
+		table = new JTable();
+		scrollPane.setViewportView(table);
+		
+		JPanel panel_1 = new JPanel();
+		panel_1.setBorder(new TitledBorder(null, "Search", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+		panel_1.setBounds(22, 396, 406, 69);
+		frame.getContentPane().add(panel_1);
+		panel_1.setLayout(null);
+		
+		JLabel lblNewLabel_1_1_1 = new JLabel("Reg num");
+		lblNewLabel_1_1_1.setBounds(43, 20, 80, 28);
+		lblNewLabel_1_1_1.setFont(new Font("Tahoma", Font.BOLD, 14));
+		panel_1.add(lblNewLabel_1_1_1);
+		
+		sreg = new JTextField();
+		sreg.setBounds(120, 29, 187, 19);
+		sreg.setColumns(10);
+		panel_1.add(sreg);
+		
+		JButton btnUpdate = new JButton("Update");
+		btnUpdate.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+        String name,id,grade;
+        
+        
+        name = sname.getText();
+        grade = sgrade.getText();
+        id= sreg.getText();
+        
+         try {
+                pst = con.prepareStatement("update Stdu set sname= ?,grade=? where sid =?");
+                pst.setString(1, name);
+                pst.setString(3, id);
+                pst.setString(2, grade);
+                //pst.setString(4, bid);
+                pst.executeUpdate();
+                JOptionPane.showMessageDialog(null, "Record Update!!!!!");
+               table_load();
+               
+                sname.setText("");
+                sid.setText("");
+                sgrade.setText("");
+                sname.requestFocus();
+            }
+
+            catch (SQLException e1) {
+                
+                e1.printStackTrace();
+            }
+			}
+		});
+		btnUpdate.setBounds(556, 392, 85, 48);
+		frame.getContentPane().add(btnUpdate);
+		
+		JButton btnDelete = new JButton("Delete");
+		btnDelete.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+		           String s_id;
+		           s_id  = sreg.getText();
+		           
+		            try {
+		                   pst = con.prepareStatement("delete from Stdu where sid =?");
+		           
+		                   pst.setString(1, s_id);
+		                   pst.executeUpdate();
+		                   JOptionPane.showMessageDialog(null, "Record Delete!!!!!");
+		                   table_load();
+		                  
+	                
+		                   sname.setText("");
+		                   sid.setText("");
+		                   sgrade.setText("");
+		                   sname.requestFocus();
+		               }
+
+		               catch (SQLException e1) {
+		                   
+		                   e1.printStackTrace();
+		               }
+			}
+		});
+		btnDelete.setBounds(697, 392, 85, 48);
+		frame.getContentPane().add(btnDelete);
+       
+}
+}
 
