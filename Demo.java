@@ -1,0 +1,44 @@
+import java.util.*; 
+public class Demo
+{
+	public static void main(String[] args)
+	{
+		System.out.print("Enter no.subjects:");
+		Scanner sc=new Scanner(System.in);
+		int n=sc.nextInt();
+		int arr[]=new int[n];
+		int sum=0;
+		for(int i=0;i<n;i++)
+		{
+			System.out.print("Enter mark "+(i+1)+":");
+			arr[i]=sc.nextInt();
+			sum=sum+arr[i];
+			
+		}
+		int avg=sum/n;
+		System.out.println("Sum:"+sum);
+		System.out.println("Average:"+avg);
+		if(avg>=90)
+		{
+			System.out.println("Grade O");
+		}
+                else if(avg>=80 && avg<=90)
+		{
+			System.out.println("Grade A+");
+		}
+		else if(avg>=70  && avg<80)
+		{
+			System.out.println("Grade A");
+		}
+		 else if(avg>=50 && avg<70)
+		{
+			System.out.println("Grade B");
+		}
+		else
+		{
+			System.out.println("Fail");
+		}
+
+					
+	}
+}
